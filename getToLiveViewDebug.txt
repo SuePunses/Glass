@@ -1,0 +1,14 @@
+11-Jul-2023 14:13:05 - Sending WOL to 192.168.102.134 - D4:52:EE:47:5D:E3 - 9
+11-Jul-2023 14:13:05 - Sending WOL to 192.168.102.136 - D4:52:EE:AF:64:C0 - 9
+11-Jul-2023 14:13:05 - Sending WOL to 192.168.102.255 - D4:52:EE:47:5D:E3 - 9
+11-Jul-2023 14:13:05 - Sending WOL to 192.168.102.255 - D4:52:EE:AF:64:C0 - 9
+11-Jul-2023 14:13:05 - ERROR: Cannot connect to STB36 for Legacy Network control at IP 192.168.102.136, Port 49160: Connection timed out
+11-Jul-2023 14:13:12 - Sending WOL to 192.168.101.116 - D4:52:EE:48:66:D9 - 9
+11-Jul-2023 14:13:12 - Sending WOL to 192.168.101.255 - D4:52:EE:48:66:D9 - 9
+11-Jul-2023 14:13:23 - Sending WOL to 192.168.102.136 - D4:52:EE:AF:64:C0 - 9
+11-Jul-2023 14:13:23 - Sending WOL to 192.168.102.255 - D4:52:EE:AF:64:C0 - 9
+11-Jul-2023 14:13:23 - ERROR: Cannot connect to STB36 for Legacy Network control at IP 192.168.102.136, Port 49160: Connection timed out
+11-Jul-2023 14:13:42 - Sending WOL to 192.168.102.136 - D4:52:EE:AF:64:C0 - 9
+11-Jul-2023 14:13:42 - Sending WOL to 192.168.102.255 - D4:52:EE:AF:64:C0 - 9
+11-Jul-2023 14:13:42 - ERROR: Cannot connect to STB36 for Legacy Network control at IP 192.168.102.136, Port 49160: Connection timed out
+All STBs finished the test

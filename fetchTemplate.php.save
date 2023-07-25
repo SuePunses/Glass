@@ -1,0 +1,74 @@
+<?php
+
+// Check if file exist
+
+if (file_exists('Youtube.json'))
+{
+	$filename = 'Youtube.json';
+	$data =  file_get_contents($filename);
+	print_r($data);
+	
+
+
+}
+
+
+
+
+
+// Read the JSON file and decode it into an array
+$filePath = "/var/www/html/suDevGlassAutomation/cgi-bin/tests/Youtube.json";
+$jsonData = readJsonFile($filePath);
+
+// Generate the dropdown list from screen name
+$screenNames = array_keys[$jsonData];
+
+// Function to read and decode the JSON file
+function readJsonFile($filePath) {
+	$jsonData = file_get_contents($filePath);
+	return json_decode($jsonData, true);
+}
+
+// Function to write data back to the JSON file
+function writeJsonFile($filePath, $data) {
+	$jsonData = json_encode($data, JSON_PRETTY_PRINT);
+	file_put_contents($filePath, $jsonData);
+}
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["selected_option"])) {
+	$filePath = "/var/www/html/suDevGlassAutomation/cgi-bin/tests/Youtube.json";
+	$jsonData = readJsonFile($filePath);
+
+	// Update the JSON data with the selected option from the form
+	$jsonData["selected_option"] = $_POST["selected_option"];
+
+	// Write the updated data back to the JSON file
+	writeJsonFile($filePath, $jsonData);
+}
+
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dropdown List</title>
+</head>
+<body>
+
+
+	<h1>Dropdown List from Youtube JSON</h1>
+	<form method="post">
+		<label for="selected_option">Select screen name:</label>
+		<select name="selected_option" id="selected_option">
+			<?php
+			foreach ($screenNames as $screenName) {
+				$selected = ($jsonData["selected_option"] === $screenName) ? "selected" : "";
+				echo "<option value=\"$screenName\" $selected>$screenName</option>";
+			}
+			?>
+		</select>
+		<button type="submit">Show</button>
+	</form>
+</body>
+</html>

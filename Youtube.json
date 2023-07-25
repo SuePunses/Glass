@@ -1,0 +1,78 @@
+ {
+	"1":
+		{
+		"screenName": "Youtube Home - Home Icon",
+		"filePath": "youtubeHomeIconNormal.png",
+		"onScreenCords": [280,340,40,110],
+		"responseCommand": "cursor right,t5,cursor down,t5,select",
+		"responseWait": 5,
+		"textOnScreen": []
+		},
+	"2":
+		{
+		"screenName": "Youtube Home - Home Icon Highlighted",
+		"filePath": "youtubeHomeIconHighlighted.png",
+		"onScreenCords": [280,340,40,110],
+		"responseCommand": "cursor right,t5,cursor down,t5,select",
+		"responseWait": 5,
+		"textOnScreen": ["Home"]
+		},
+	"3":
+		{
+		"screenName": "Youtube Ad - Ad Icon",
+		"filePath": "youtubeAdIcon.png",
+		"onScreenCords": [90,150,100,150],
+		"responseCommand": "select,t5,play",
+		"responseWait": 20,
+		"textOnScreen": ["Ad"]
+		},
+	"4":
+		{
+		"screenName": "Youtube Ad - Skip Ad Icon",
+		"filePath": "youtubeSkipAdIcon.png",
+		"onScreenCords": [900,950,1600,1800],
+		"responseCommand": "select,t5,play",
+		"responseWait": 20,
+		"textOnScreen": ["ad"]
+		},
+	"5":
+		{
+		"screenName": "Youtube Logo",
+		"filePath": "youtubeLogo.png",
+		"onScreenCords": [70,120,1610,1810],
+		"responseCommand": "cursor right,t5,cursor down,t5,select",
+		"responseWait": 5,
+		"textOnScreen": ["YouTube"]
+		},
+	"6":
+		{
+		"screenName": "Youtube Content - Progress Bar Started",
+		"filePath": "youtubeProgressBarIconGrey.png",
+		"onScreenCords": [780,840,70,140],
+		"responseCommand": "select,t5,play",
+		"responseWait": 5,
+		"textOnScreen": [],
+		"loaded": "yes"
+		},
+	"7":
+		{
+		"screenName": "Youtube Content - Progress Bar Continue",
+		"filePath": "youtubeProgressBarIconRed.png",
+		"onScreenCords": [780,840,140,1790],
+		"responseCommand": "play",
+		"responseWait": 5,
+		"textOnScreen": [],
+		"loaded": "yes"
+		},
+	"8":
+		{
+		"screenName": "Youtube Content - Progress Bar Live",
+		"filePath": "youtubeProgressBarIconLive.png",
+		"onScreenCords": [780,840,1790,1850],
+		"responseCommand": "play",
+		"responseWait": 5,
+		"textOnScreen": [],
+		"loaded": "yes"
+		}
+
+}

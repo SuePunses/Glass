@@ -1,0 +1,148 @@
+ {
+	"1":
+		{
+		"screenName": "Prime Choose a Profile",
+		"filePath": "primeLoginIcon.png",
+		"onScreenCords": [415,675,570,825],
+		"responseCommand": "select",
+		"responseWait": 5,
+		"textOnScreen": []
+		},
+	"2":
+		{
+		"screenName": "Prime Home",
+		"filePath": "primeHomeIcon.png",
+		"onScreenCords": [340,425,30,110],
+		"responseCommand": "cursor right,t5,cursor down,t5,cursor down,t5,select",
+		"responseWait": 25,
+		"textOnScreen": []
+		},
+	"3":
+		{
+		"screenName": "Prime Free Prime Trial Text",
+		"filePath": "primeFreePrimeTrialText.png",
+		"onScreenCords": [825,885,83,480],
+		"responseCommand": "backup,t5,cursor right",
+		"responseWait": 10,
+		"textOnScreen": [],
+		"restartLoop" : 1
+		},
+	"4":
+		{
+		"screenName": "Prime Play or Resume Content",
+		"filePath": "primePlayIcon.png",
+		"onScreenCords": [690,900,100,400],
+		"responseCommand": "select,t8,cursor up",
+		"responseWait": 10,
+		"textOnScreen": []
+		},
+	"5":
+		{
+		"screenName": "Prime Content Start Over",
+		"filePath": "primeStartOverHighlighted.png",
+		"onScreenCords": [710,840,440,560],
+		"responseCommand": "select,t8,cursor up",
+		"responseWait": 10,
+		"textOnScreen": [],
+		"restartLoop" : 1
+		},
+	"6":
+		{
+		"screenName": "Prime Content Watchlist",
+		"filePath": "primeWatchlistHighlighted.png",
+		"onScreenCords": [710,840,560,685],
+		"responseCommand": "cursor left,t1,cursor left",
+		"responseWait": 8,
+		"textOnScreen": [],
+		"restartLoop" : 1
+		},
+	"7":
+		{
+		"screenName": "Prime Content Info",
+		"filePath": "primeInfoHighlighted.png",
+		"onScreenCords": [710,840,685,820],
+		"responseCommand": "cursor left,t1,cursor left,t1,cursor left",
+		"responseWait": 10,
+		"textOnScreen": [],
+		"restartLoop" : 1
+		},
+	"8":
+		{
+		"screenName": "Prime Content Paused",
+		"filePath": "primePauseIconSmall.png",
+		"onScreenCords": [800,900,80,150],
+		"responseCommand": "cursor up,t5",
+		"responseWait": 5,
+		"textOnScreen": [],
+		"loaded": "yes"
+		},
+	"9":
+		{
+		"screenName": "Prime Content Play",
+		"filePath": "primePlayIconSmall.png",
+		"onScreenCords": [690,900,80,300],
+		"responseCommand": "select",
+		"responseWait": 10,
+		"textOnScreen": [],
+		"loaded": "yes"
+		},
+	"10":
+		{
+		"screenName": "Prime Free Content with Ads",
+		"filePath": "primeAdsFreevee.png",
+		"onScreenCords": [630,870, 110,350],
+		"responseCommand": "select,t7,play",
+		"responseWait": 12,
+		"textOnScreen": ["Freevee", "with ads"]
+		},
+	"11":
+		{
+		"screenName": "Prime Rent or Buy Content",
+		"filePath": "primeRentBuy.png",
+		"onScreenCords": [620,710,110,520],
+		"responseCommand": "backup",
+		"responseWait": 8,
+		"textOnScreen": ["buy", "trial"],
+		"restartLoop" : 1
+		},
+	"12":
+		{
+		"screenName": "Prime Watch with Membership Content",
+		"filePath": "primeMemberWatch.png",
+		"onScreenCords": [620,710,110,630],
+		"responseCommand": "backup,t5,cursor right",
+		"responseWait": 10,
+		"textOnScreen": ["membership"],
+		"restartLoop" : 1
+		},
+	"13":
+		{
+		"screenName": "Prime subscribe to watch",
+		"filePath": "primeSubscribe.png",
+		"onScreenCords": [40,290,60,1550],
+		"responseCommand": "backup",
+		"responseWait": 10,
+		"textOnScreen": ["Subscribe"],
+		"restartLoop" : 1
+		},
+	"14":
+		{
+		"screenName": "Prime Content is playing - Progress Bar",
+		"filePath": "primePauseIconSmall.png",
+		"onScreenCords": [830,920,70,1880],
+		"responseCommand": "cursor up",
+		"responseWait": 5,
+		"textOnScreen": [],
+		"loaded": "yes"
+		},
+	"15":
+		{
+		"screenName": "Prime Content is playing - Subtitle",
+		"filePath": "primeSubtitle.png",
+		"onScreenCords": [610,700,60,250],
+		"responseCommand": "cursor up",
+		"responseWait": 5,
+		"textOnScreen": ["Subtitles"],
+		"loaded": "yes"
+		}
+}

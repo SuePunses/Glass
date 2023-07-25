@@ -1,0 +1,158 @@
+{
+	"1":
+		{
+		"screenName": "Netflix Choose Profile Text",
+		"filePath": "netflixChooseProfileText.png",
+		"onScreenCords": [115,165,185,410],
+		"responseCommand": "cursor up,t1,cursor up,t1,select",
+		"responseWait": 5,
+		"textOnScreen": [],
+		"restartLoop": 1
+		},
+	"2":
+		{
+		"screenName": "Netflix Choose Kids Profile",
+		"filePath": "netflixKidsLogin.png",
+		"onScreenCords": [320,600,185,750],
+		"responseCommand": "cursor up,t5",
+		"responseWait": 4,
+		"textOnScreen": ["children"],
+		"restartLoop": 1
+		},
+	"3":
+		{
+		"screenName": "Netlfix Choose Tester Profile",
+		"filePath": "netflixUserLogin.png",
+		"onScreenCords": [160,370,185,400],
+		"responseCommand": "select",
+		"responseWait": 4,
+		"textOnScreen": []
+		},
+    	"4":
+		{
+		"screenName": "Netflix Home Screen - Home Icon",
+		"filePath": "netflixHomeIcon.png",
+		"onScreenCords": [370,450,40,160],
+		"responseCommand": "cursor right,cursor down,t5,cursor down,t5,select,t20,play",
+		"responseWait": 5,
+		"textOnScreen": []
+		},
+    	"5":
+		{
+		"screenName": "Netflix Home Screen - Home Icon Highlighted",
+		"filePath": "netflixHomeIconHighlighted.png",
+		"onScreenCords": [370,450,40,160],
+		"responseCommand": "cursor right,cursor down,t5,cursor down,t5,select,t20,play",
+		"responseWait": 5,
+		"textOnScreen": ["Home"]
+		},
+    	"6":
+		{
+		"screenName": "Netflix Home Screen - Home Icon Faded",
+		"filePath": "netflixHomeIconFaded.png",
+		"onScreenCords": [370,450,40,160],
+		"responseCommand": "cursor right,cursor down,t5,cursor down,t5,select,t20,play",
+		"responseWait": 5,
+		"textOnScreen": []
+		},
+	"7":
+		{
+		"screenName": "Netflix Select Content Screen - PLAY",
+		"filePath": "netflixSelectContentPlay.png",
+		"onScreenCords": [480,715,165,220],
+		"responseCommand": "play, t5",
+		"responseWait": 20,
+		"textOnScreen": ["Play"]
+		},
+	"8":
+		{
+		"screenName": "Netflix Select Content Screen - RESUME",
+		"filePath": "netflixSelectContentResume.png",
+		"onScreenCords": [480,715,165,220],
+		"responseCommand": "play, t5",
+		"responseWait": 20,
+		"textOnScreen": ["Resume"]
+		},
+	"9":
+		{
+		"screenName": "Netflix Content Is Playing - Play Icon",
+		"filePath": "netflixPlayIconNormal.png",
+		"onScreenCords": [860,930,200,730],
+		"responseCommand": "cursor up",
+		"responseWait": 20,
+		"textOnScreen": [],
+		"loaded": "yes"
+		},
+	"10":
+		{
+		"screenName": "Netflix Content Is Playing - Play Icon Highlighted",
+		"filePath": "netflixPlayIconHighlighted.png",
+		"onScreenCords": [860,930,200,275],
+		"responseCommand": "cursor up",
+		"responseWait": 20,
+		"textOnScreen": [],
+		"loaded": "yes"
+		},
+	"11":
+		{
+		"screenName": "Netflix Content Is Playing - Play Icon Faded",
+		"filePath": "netflixPlayIconFaded.png",
+		"onScreenCords": [860,960,200,300],
+		"responseCommand": "cursor up",
+		"responseWait": 20,
+		"textOnScreen": [],
+		"loaded": "yes"
+		},
+	"12":
+		{
+		"screenName": "Netflix Content Is Playing - Pause Icon",
+		"filePath": "netflixPauseIcon.png",
+		"onScreenCords": [860,940,200,280],
+		"responseCommand": "cursor up",
+		"responseWait": 20,
+		"textOnScreen": [],
+		"loaded": "yes"
+		},
+	"13":
+		{
+		"screenName": "Netflix Content Is Playing - Option Icon",
+		"filePath": "netflixOptionIconNormal.png",
+		"onScreenCords": [80,170,210,300],
+		"responseCommand": "cursor up",
+		"responseWait": 20,
+		"textOnScreen": ["OPTIONS"],
+		"loaded": "yes"
+		},
+	"14":
+		{
+		"screenName": "Netflix Content Is Playing - Option Icon Highlighted",
+		"filePath": "netflixOptionIconHighlighted.png",
+		"onScreenCords": [80,170,210,300],
+		"responseCommand": "cursor up",
+		"responseWait": 20,
+		"textOnScreen": ["OPTIONS"],
+		"loaded": "yes"
+		},
+
+	"15":
+		{
+		"screenName": "Netflix Content Is Playing - Options Icon Faded",
+		"filePath": "netflixOptionIconFaded.png",
+		"onScreenCords": [80,170,210,300],
+		"responseCommand": "cursor up",
+		"responseWait": 3,
+		"textOnScreen": ["OPTIONS"],
+		"loaded": "yes"
+		},
+	"16":
+		{
+		"screenName": "Netflix Icon - Lower Right of Screen",
+		"filePath": "netflixLogoNE.png",
+		"onScreenCords": [910,1010,1575,1680],
+		"responseCommand": "cursor up",
+		"responseWait": 3,
+		"textOnScreen": [],
+		"restartLoop": 1
+		}
+}
+

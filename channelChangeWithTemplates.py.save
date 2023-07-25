@@ -1,0 +1,324 @@
+#!/usr/bin/python3
+
+from time import sleep
+from datetime import datetime
+import sys
+import cv2
+import numpy as np
+import pytesseract
+import os
+from os.path import exists
+import urllib.request
+import subprocess
+import json
+import re
+import pathlib
+import imagehash
+from PIL import Image
+
+curdir = pathlib.Path.cwd() 	# Gets the current directory of this script
+parentdir = curdir.parent	# Gets the parent directory of "curdir"
+maindir = parentdir.parent	# Gets the parent directory of "parentdir" so we have the main directory for automation
+filedir = str(maindir) + '/files'	# The main file directory
+resultsdir = filedir + '/results'
+.÷÷÷÷÷/testfilesdir = filedir + '/testFiles'	# The main directory for files that are used for tests
+sshotdir = testfilesdir + '/tmpScreenshots'	# The screenshot directory for tests
+ccfile = testfilesdir + '/chanChangeChannels.json'	# The JSON file containing channels to use
+camfile = filedir + '/panelCameraInfo.json'
+
+templatesfile = testfilesdir + '/chanChangeTemplates.json'
+stbcontrolfile = '/home/rtglass/stbController/config/stbData.json'      # Define the STB controller data file for use later
+stbcontrolscript = '/home/rtglass/stbController/scripts/stbControl.pl'	# Define the STB controller script to control the panels
+
+# Load the STB controller JSON data
+controlf = open(stbcontrolfile)
+stbData = json.load(controlf)	# Load the JSON in to the stbData dictionary object
+
+# Load the channel JSON data
+ccf = open(ccfile)
+chanData = json.load(ccf)	# Load the JSON in to the chanData dictionary object
+
+# Load the channel change templates JSON data
+ccf = open(templatesfile)
+templateData = json.load(ccf)	# Load the JSON in to the templateData dictionary object
+
+# Load the panel camera info JSON data
+pcf = open(camfile)
+camData = json.load(pcf)
+
+# Check that STB arguments have been passed to the script
+if len(sys.argv) < 2:
+	print(f"No panels selected for test")
+	exit()
+
+stbstring = sys.argv[1]	# Read the STB list from input argument 1
+stbs = stbstring.split(',')	# Split the list by the comma (,) to support multiple STBs
+
+def chanChange(stb):
+	stbip = stbData[stb]['VNCIP']       # Get the STB IP from the STB controller data file
+	stbresdir = f"{resdir}/{stb}"
+	if not os.path.exists(stbresdir):
+	        os.mkdir(stbresdir)
+
+	results = {}
+
+	# First check the panel is awake. The wakeCheck function will try and wake it 3 times using WOL
+	wakeres = wakeCheck(stb,stbip)
+	if wakeres is None:
+		#print(f"{stb} would not respond to ping after 3 wake attempts, aborting")
+		results = "Fail: Unable to wake panel {stb} for testing"
+		return
+
+	# We should now be on the TV Guide rail
+	# Hit "select" to enter the TV Guide
+	subprocess.run(['perl', stbcontrolscript, 'control', 'tv guide', stb], stdout=subprocess.DEVNULL)
+	sleep(6)	# Wait for TV guide to load
+
+	# Iterate through each channel in the channel list file
+	for key in chanData:
+		channo = chanData[key]
+		readyres = getReady(stb,stbip)	# Use the getReady function to get the panel ready for channel number entry
+		if readyres is None:
+			#print(f"Failed to get panel {stb} ready for the channel entry")
+			results[channo] = "Fail: Unable to get panel ready for channel entry"
+			continue
+
+		nums = list(channo)
+		comstring = ',t1,'.join(nums)
+		subprocess.run(['perl', stbcontrolscript, 'control', comstring, stb], stdout=subprocess.DEVNULL)
+		sleep(15)
+
+		readyres = getReady(stb,stbip) # Use the getReady function to get the panel ready for channel verification
+		if readyres is None:
+			#print(f"Failed to get panel {stb} ready for the channel verification")
+			results[channo] = "Fail: Unable to get panel ready for channel tune confirmation"
+			continue
+
+		subprocess.run(['perl', stbcontrolscript, 'control', 'select', stb], stdout=subprocess.DEVNULL)
+		sleep(3)
+		ocrres = screenshotAndOCR(stb,stbip,865,925,345,415)
+		res = re.search(channo, ocrres, re.IGNORECASE)
+		if res is None:
+			#print(f"{stb} could not verify it was on {channo}")
+			results[channo] = "Fail: Channel tune confirmation failed"
+			continue
+
+		# Once verified we are on the correct channel, check for moving image!
+		if stb not in camData:
+			#print(f"ERROR: Camera info for {stb} was not found! Unable to verify streaming")
+			results[channo] = "Fail: Camera info not found"
+			continue
+
+		camip = camData[stb]
+		stream = 'rtsp://admin:Chilworthevo1@' + camip + ':554/h265Preview_01_main'
+		movingres = verifyStreaming(stb,stream)
+		if movingres is None:
+			#print(f"Fail: {stb} failed to verify moving picture on channel {channo}")
+			results[channo] = "Fail: Channel stream verification failed"
+		else:
+			results[channo] = "Pass"
+
+	# After all the channels have been tested, return to the main UI
+	subprocess.run(['perl', stbcontrolscript, 'control', 'tv guide', stb], stdout=subprocess.DEVNULL)
+	resfile = f"{stbresdir}/Results.json"
+	with open(resfile, 'w') as outfile:
+		json.dump(results, outfile, indent=4)
+	#print(results)
+
+def verifyStreaming(stb,stream):
+	moving = 0
+	for i in range(2):
+		for i in range(1,3):
+			cap = cv2.VideoCapture(stream)
+			if (cap.isOpened() == False):
+				continue
+			ret, frame = cap.read()
+
+			leftSection = frame[280:760, 250:700]
+			#leftSection = frame[480:960, 700:1100]
+			cv2.imwrite(f"{sshotdir}/{stb}_streamCapture{i}.jpg",leftSection)
+			cap.release()
+			cv2.destroyAllWindows()
+			sleep(10)
+
+		hash1 = imagehash.average_hash(Image.open(f"{sshotdir}/{stb}_streamCapture1.jpg"))
+		hash2 = imagehash.average_hash(Image.open(f"{sshotdir}/{stb}_streamCapture2.jpg"))
+		diff = hash1 - hash2
+		if diff < 15:
+			sleep(10)
+		else:
+			moving = 1
+			break
+
+	return moving
+
+def getReady(stb,stbip):
+	ready = 0
+	cnt = 1
+	while (ready < 1) or (cnt > 10):
+		sshotfile = sshotdir + '/' + stb + '_Screenshot.png'	# Define the main screenshot file
+		urllib.request.urlretrieve('http://' + stbip + ':5800/screenshot.png', sshotfile)	# Grab the screenshot
+		#res = urllib.request.urlretrieve('http://' + stbip + ':5800/screenshot.png', sshotfile)	# Grab the screenshot
+		#print(res)
+		sleep(1)
+		img = cv2.imread(sshotfile)
+		match = 0
+		for t in templateData:
+			tname = templateData[t]['name']
+			tpath = templateData[t]['path']
+			tpathfull = str(maindir) + '/' + tpath
+			#print(f"Trying template {tpathfull}")
+			template = cv2.imread(tpathfull)
+			res = cv2.matchTemplate(img,template,cv2.TM_CCOEFF_NORMED)
+			#print (np.unravel_index(result.argmax(),result.shape))
+			min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+			if max_val > 0.8:
+				if re.search("restart",tname,re.IGNORECASE):
+					match = 1
+					subprocess.run(['perl', stbcontrolscript, 'control', 'cursor down', stb], stdout=subprocess.DEVNULL)
+					break
+				elif re.search("guide channels",tname,re.IGNORECASE):
+					match = 1
+					subprocess.run(['perl', stbcontrolscript, 'control', 'select', stb], stdout=subprocess.DEVNULL)
+					break
+				elif re.search("watch from start",tname,re.IGNORECASE):
+					match = 1
+					sleep(7)
+					ready = 1
+					break
+				elif re.search("channel banner",tname,re.IGNORECASE):
+					match = 1
+					subprocess.run(['perl', stbcontrolscript, 'control', 'backup', stb], stdout=subprocess.DEVNULL)
+					ready = 1
+					break
+				elif re.search("PIN request",tname,re.IGNORECASE):
+					match = 1
+					subprocess.run(['perl', stbcontrolscript, 'control', '1,t1,2,t1,3,t1,4', stb], stdout=subprocess.DEVNULL)
+					sleep(5)
+					break
+				elif re.search("tv guide main",tname,re.IGNORECASE):
+					match = 1
+					tvguide(stb,stbip)
+					subprocess.run(['perl', stbcontrolscript, 'control', 'select', stb], stdout=subprocess.DEVNULL)
+					sleep(6)	# Wait for TV guide to load
+					break
+
+		if match == 0:
+			ready = 1
+
+		cnt = cnt + 1
+		sleep(3)
+
+	return ready
+
+def screenshotAndOCR(stb,stbip,y,h,x,w):
+	text = ''
+	sshotfile = sshotdir + '/' + stb + '_Screenshot.png'	# Define the main screenshot file
+	urllib.request.urlretrieve('http://' + stbip + ':5800/screenshot.png', sshotfile)	# Grab the screenshot
+	img = cv2.imread(sshotfile)
+	cropImg = img.copy()
+	if None not in (y,h,x,w):
+		cropImg = img[y:h,x:w]
+
+	cropImg = (255-cropImg)
+	text = pytesseract.image_to_string(cropImg, lang='eng')  # Process the image through pytesseract to get the text
+	text = text.replace(" ","")
+	text = text.replace("\n","")
+	return text
+
+def tvguide(stb,stbip):
+
+	subprocess.run(['perl', stbcontrolscript, 'control', 'tv guide', stb], stdout=subprocess.DEVNULL)
+	sleep(6)
+
+	sshotfile = sshotdir + '/' + stb + '_Screenshot.png'
+
+	# Clear out any old screenshot files for this STB
+	if exists(sshotfile):
+		os.remove(sshotfile)
+
+	found = 0
+	for i in range(10):
+		urllib.request.urlretrieve('http://' + stbip + ':5800/screenshot.png', sshotfile)
+		sleep(1)
+		if exists(sshotfile) is None:
+			continue
+
+		img = cv2.imread(sshotfile)
+		cropImg = img[590:750, 80:420]  # Crop the image to the area where the start of the Apps bar is
+		cropImg = (255-cropImg)
+		text = pytesseract.image_to_string(cropImg, lang='eng')  # Process the image through pytesseract to get the text
+		text = text.replace(" ","")
+		text = text.replace("\n","")
+
+		res = re.search("tvguide", text, re.IGNORECASE)
+		if res is not None:
+			found = 1
+			break
+		else:
+			#print(f"{text} did not match our key {option}",file=sys.stderr)
+			subprocess.run(['perl', stbcontrolscript, 'control', 'cursor down', stb], stdout=subprocess.DEVNULL)
+			sleep(1)
+
+
+	return found
+
+
+def wakeCheck(stb,stbip):
+	awake = 0
+	for i in range(3):
+		pingres = subprocess.run(['ping','-c','1',stbip], stdout=subprocess.DEVNULL)
+		if pingres.returncode != 0:
+			subprocess.run(['perl', stbcontrolscript, 'control', 'wakeonlan', stb], stdout=subprocess.DEVNULL)
+			sleep(15)
+		else:
+			awake = 1
+			break
+
+	return awake
+
+
+
+runningSTBs = {}	# This will contain entries for all STBs that are currently set to run tests
+processes = []
+now = datetime.now()
+timestamp = now.strftime("%Y-%m-%d_%H:%M")
+resdir = resultsdir + '/ChannelChangeTests_' + timestamp
+if not os.path.exists(resdir):
+	os.mkdir(resdir)
+
+#print(f"{timestamp}")
+#exit()
+for b in stbs:
+	# First check the given STB has a valid number
+	res = re.search('\d+',b)
+	if res is None:
+		print(f"{b} had no valid STB number")
+		continue
+	num = res[0]	# Capture the number from the provided STB string
+	box = 'STB' + str(num)	# Create the STB name for testing
+
+	# Now check this STB hasn't been selected more than once by accident
+	# This will avoid clashes
+	if box in runningSTBs:
+		print(f"{box} has already been set to test")
+		continue
+	else:
+		runningSTBs[box] = 1
+
+	newpid = os.fork()
+	if newpid == 0:
+		#print(box)
+		chanChange(box)
+		os._exit(0)
+	else:
+		processes.append(newpid)
+
+while processes:
+	pid, exit_code = os.wait()
+	if pid == 0:
+		sleep(1)
+	else:
+		processes.remove(pid)
+
+print("All STBs finished the test")
